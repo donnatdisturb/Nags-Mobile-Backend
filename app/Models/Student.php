@@ -39,5 +39,8 @@ class Student extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    public function goodMorals()
+    {
+        return $this->hasMany(GoodMoral::class, 'student_id');
+    }
 }

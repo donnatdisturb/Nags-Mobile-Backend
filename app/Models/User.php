@@ -79,8 +79,18 @@ public function teacher()
 {
     return $this->hasOne(Teacher::class, 'user_id');
 }
-
-
-  
+public function parent()
+{
+    return $this->hasOne(StudentFamily::class);
+}
+public function isGuidance()
+{
+    return $this->role === 'guidance'; // Adjust 'role' field based on your database structure
+}
+    
+public function hasRole($role)
+{
+    return $this->role === $role; // Adjust this based on your role implementation
+}
 
 }
