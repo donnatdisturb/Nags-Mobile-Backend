@@ -17,4 +17,8 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function students() 
+    {
+        return $this->HasMany(Student::class,'id');
+    }
 }

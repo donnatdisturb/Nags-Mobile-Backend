@@ -21,4 +21,8 @@ class Violations extends Model
     {
         return $this->belongsTo(Punishments::class,'punishment_id');
     }
+    public function studentrecord() 
+    {
+        return $this->HasMany(StudentRecords::class);
+    }
 }
