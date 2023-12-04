@@ -8,6 +8,7 @@ use App\Models\Teacher;
 use Illuminate\Support\Facades\Log; 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class TeacherProfileController extends Controller
 {
@@ -24,14 +25,17 @@ class TeacherProfileController extends Controller
 
         if ($user) {
             $teacher = Teacher::where('user_id', $user->id)->first();
+    
 
             if ($teacher) {
                 Log::info('Teacher Data:', $teacher->toArray());
+                $imageUrl = asset('storage/' . $teacher->teacher_img);
 
                 return response()->json([
                     'email' => $user->email,
                     'fname' => $teacher->fname,
                     'lname' => $teacher->lname,
+                    'teacher_img' => $imageUrl,
                 ]);
             } else {
                 Log::error('Teacher profile not found for this user');
@@ -60,9 +64,21 @@ class TeacherProfileController extends Controller
         if ($user) {
             $teacher = teacher::where('user_id', $user->id)->first();
 
-
             $teacher->fname = $request->input('fname');
             $teacher->lname = $request->input('lname');
+            $imageData = $request->input('uploads');
+            $imgData = base64_decode($imageData);
+
+            if ($imgData === false) {
+                throw new \Exception('Invalid base64 image data.');
+            }
+
+            $imgFileName = 'student_img_' . time() . '.jpg';
+            
+            Storage::disk('public')->put('images/' . $imgFileName, $imgData);
+            
+            $imgPath = 'images/' . $imgFileName;
+            $teacher->teacher_img = $imgPath;
 
             $teacher->save();
 

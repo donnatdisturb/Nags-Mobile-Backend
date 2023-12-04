@@ -9,6 +9,7 @@ use App\Models\Guidance;
 use App\Models\Student;
 use App\Models\StudentRecords;
 use App\Models\StudentFamily;
+use App\Models\Violation;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -209,6 +210,7 @@ public function dashboard(Request $request)
                 $studentIDs = Student::where('family_id', $familyId)->pluck('id');
 
                 $studentRecords = StudentRecords::whereIn('student_id', $studentIDs)
+                    ->where('status','=','APPROVED')
                     ->with(['students', 'violations', 'guidances', 'punishments'])
                     ->get();
 
@@ -233,6 +235,7 @@ public function dashboard(Request $request)
     foreach ($studentRecords as $record) {
         $studentName = $record->students->fname;
 
+        \Log::info('Record' . $record);
         $data = [
             'dateRecorded' => $record->date_recorded,
             'remarks' => $record->remarks,

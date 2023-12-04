@@ -22,10 +22,8 @@ class StudentProfileController extends Controller
             $student = $user->student;
     
             if ($student) {
-                // Log the data for debugging
                 \Log::info('Student Data:', $student->toArray());
     
-                // Assuming 'student_img' contains the filename of the image
                 $imageUrl = asset('storage/' . $student->student_img);
     
                 return response()->json([
@@ -68,11 +66,9 @@ class StudentProfileController extends Controller
                 $user->load('student');
                 $student = $user->student;
 
-                // Update the profile fields based on your form input
                 $student->fname = $request->input('fname');
                 $student->lname = $request->input('lname');
 
-                // Your existing image upload logic here
                 $imageData = $request->input('uploads');
                 $imgData = base64_decode($imageData);
 
@@ -82,10 +78,8 @@ class StudentProfileController extends Controller
 
                 $imgFileName = 'student_img_' . time() . '.jpg';
                 
-                // Save the image to the 'public' disk
                 Storage::disk('public')->put('images/' . $imgFileName, $imgData);
                 
-                // Save the relative path to the student model (without 'public/')
                 $imgPath = 'images/' . $imgFileName;
                 $student->student_img = $imgPath;
                 $student->save();
